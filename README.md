@@ -1,3 +1,5 @@
+## Small Scraper ##
+
 Scrapes Basketball Reference for certain team stats.
 
 BECAREFUL AS YOU CAN GET RATE LIMITED 
