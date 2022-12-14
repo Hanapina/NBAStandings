@@ -17,9 +17,8 @@ public class Scraper {
     public static void main(final String[] args) {
     	List<Team> westernTeamList = new LinkedList<>();
     	List<Team> easternTeamList = new LinkedList<>();
-    	System.out.println("Initializing Team Lists.\n");
-    	
     	// Western Conference Initialized
+    	System.out.println("Initializing Western Conference.\n");
     	initializeTeam("Golden State Warriors", "https://www.basketball-reference.com/teams/GSW/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Denver Nuggets", "https://www.basketball-reference.com/teams/DEN/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Utah Jazz", "https://www.basketball-reference.com/teams/UTA/2023.html", westernTeamList, easternTeamList);
@@ -35,8 +34,10 @@ public class Scraper {
     	initializeTeam("Dallas Mavericks", "https://www.basketball-reference.com/teams/DAL/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Houston Rockets", "https://www.basketball-reference.com/teams/HOU/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("San Antonio Spurs", "https://www.basketball-reference.com/teams/SAS/2023.html", westernTeamList, easternTeamList);	
-    	
+    	System.out.println("Done.");
+    	System.out.println();
     	// Eastern Conference Initialized
+    	System.out.println("Initializing Eestern Conference.\n");
     	initializeTeam("Boston Celtics", "https://www.basketball-reference.com/teams/BOS/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Brooklyn Nets", "https://www.basketball-reference.com/teams/BRK/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Toronto Raptors", "https://www.basketball-reference.com/teams/TOR/2023.html", westernTeamList, easternTeamList);
@@ -52,7 +53,10 @@ public class Scraper {
     	initializeTeam("Washington Wizards", "https://www.basketball-reference.com/teams/WAS/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Charlotte Hornets", "https://www.basketball-reference.com/teams/CHO/2023.html", westernTeamList, easternTeamList);	
     	initializeTeam("Orlando Magic", "https://www.basketball-reference.com/teams/ORL/2023.html", westernTeamList, easternTeamList);
+    	System.out.println("Done.");
+    	System.out.println();
     	
+    	// Doing the sorts
     	Collections.sort(westernTeamList, Comparator.comparing(Team::getHiddenNumRank));
     	Collections.sort(easternTeamList, Comparator.comparing(Team::getHiddenNumRank));
     	
