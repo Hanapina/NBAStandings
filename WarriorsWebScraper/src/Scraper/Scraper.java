@@ -149,6 +149,7 @@ public class Scraper {
     	String record = sArray[0].replaceAll(",", "");
     	String conf = items.get(6).toString();
     	
+    	// Setting the Team fields
     	team.setRank(sArray[1]);
     	team.setRecord(record);
     	team.setConference(conf);
