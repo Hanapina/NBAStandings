@@ -19,6 +19,7 @@ public class Scraper {
     	List<Team> easternTeamList = new LinkedList<>();
     	// Western Conference Initialized
     	System.out.println("Initializing Western Conference.\n");
+    	
     	initializeTeam("Golden State Warriors", "https://www.basketball-reference.com/teams/GSW/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Denver Nuggets", "https://www.basketball-reference.com/teams/DEN/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Utah Jazz", "https://www.basketball-reference.com/teams/UTA/2023.html", westernTeamList, easternTeamList);
@@ -36,6 +37,7 @@ public class Scraper {
     	initializeTeam("San Antonio Spurs", "https://www.basketball-reference.com/teams/SAS/2023.html", westernTeamList, easternTeamList);	
     	System.out.println("Done.");
     	System.out.println();
+    	
     	// Eastern Conference Initialized
     	System.out.println("Initializing Eestern Conference.\n");
     	initializeTeam("Boston Celtics", "https://www.basketball-reference.com/teams/BOS/2023.html", westernTeamList, easternTeamList);
