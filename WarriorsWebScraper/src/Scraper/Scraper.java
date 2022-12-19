@@ -68,6 +68,7 @@ public class Scraper {
     		System.out.println("Please choose which conference you want to look at.");
         	System.out.println("1. Western Conference");
         	System.out.println("2. Eastern Conference");
+        	System.out.println("3. Exit");
         	System.out.println();
         	String input;
         	boolean numCheck = false;
