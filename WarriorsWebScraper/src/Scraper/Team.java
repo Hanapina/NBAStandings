@@ -5,6 +5,9 @@ public class Team {
 	private String record;
 	private String rank;
 	private String conference;
+	private String lastGame;
+	
+	// hiddenNumRank is a sanitized number for comparison. I like having the 'th's at the end for display.
 	private int hiddenNumRank;
 
 	public Team(String name, String record, String rank, String conference, int hiddenNumRank) {
@@ -55,4 +58,13 @@ public class Team {
 	public void sethiddenNumRank(int hiddenNumRank) {
 		this.hiddenNumRank = hiddenNumRank;
 	}
+	
+	public String getLastGame() {
+		return lastGame;
+	}
+
+	public void setLastGame(String lastGame) {
+		this.lastGame = lastGame;
+	}
+
 }

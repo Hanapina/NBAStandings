@@ -21,6 +21,7 @@ public class Scraper {
     	System.out.println("Initializing Western Conference.\n");
     	
     	initializeTeam("Golden State Warriors", "https://www.basketball-reference.com/teams/GSW/2023.html", westernTeamList, easternTeamList);
+    	
     	initializeTeam("Denver Nuggets", "https://www.basketball-reference.com/teams/DEN/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Utah Jazz", "https://www.basketball-reference.com/teams/UTA/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Portland Trail Blazers", "https://www.basketball-reference.com/teams/POR/2023.html", westernTeamList, easternTeamList);
@@ -57,6 +58,7 @@ public class Scraper {
     	initializeTeam("Orlando Magic", "https://www.basketball-reference.com/teams/ORL/2023.html", westernTeamList, easternTeamList);
     	System.out.println("Done.");
     	System.out.println();
+    	
     	
     	// Doing the sorts
     	Collections.sort(westernTeamList, Comparator.comparing(Team::getHiddenNumRank));
@@ -133,7 +135,7 @@ public class Scraper {
     	List<DomText> items = page.getByXPath("//p//text()");
     	
     	//Testing Statements for now
-    	/* 
+    	/*
     	int i = 0;
     	for (DomText domText: items) {
     		System.out.println(i + ": " + domText.toString());
@@ -149,12 +151,14 @@ public class Scraper {
     	
     	String record = sArray[0].replaceAll(",", "");
     	String conf = items.get(6).toString();
+    	String winningLine = items.get(10).toString();
     	
     	// Setting the Team fields
     	team.setRank(sArray[1]);
     	team.setRecord(record);
     	team.setConference(conf);
     	team.sethiddenNumRank(numRank);
+    	team.setLastGame(winningLine);
     }
     
     public static void printInfo(Team team) {
@@ -162,7 +166,7 @@ public class Scraper {
     	System.out.println("Rank: " + team.getRank());
     	System.out.println("Record: " + team.getRecord());
     	System.out.println("Conference: " + team.getConference());
-    	System.out.println("Hidden Rank: " + team.getHiddenNumRank());
+    	System.out.println("Last game: " + team.getLastGame());	
     	System.out.println();
     }
 }
