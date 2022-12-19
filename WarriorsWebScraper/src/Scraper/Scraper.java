@@ -14,14 +14,17 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class Scraper {
+	/**
+	 * Current main function. May be separated out later for easier reading.
+	 * @param args
+	 */
     public static void main(final String[] args) {
     	List<Team> westernTeamList = new LinkedList<>();
     	List<Team> easternTeamList = new LinkedList<>();
+    	
     	// Western Conference Initialized
     	System.out.println("Initializing Western Conference.\n");
-    	
     	initializeTeam("Golden State Warriors", "https://www.basketball-reference.com/teams/GSW/2023.html", westernTeamList, easternTeamList);
-    	
     	initializeTeam("Denver Nuggets", "https://www.basketball-reference.com/teams/DEN/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Utah Jazz", "https://www.basketball-reference.com/teams/UTA/2023.html", westernTeamList, easternTeamList);
     	initializeTeam("Portland Trail Blazers", "https://www.basketball-reference.com/teams/POR/2023.html", westernTeamList, easternTeamList);
@@ -60,12 +63,13 @@ public class Scraper {
     	System.out.println();
     	
     	
-    	// Doing the sorts
+    	// Sorting each conference array by rank. 
     	Collections.sort(westernTeamList, Comparator.comparing(Team::getHiddenNumRank));
     	Collections.sort(easternTeamList, Comparator.comparing(Team::getHiddenNumRank));
     	
-    	// Just a small test comment
+    	// MENU LOGIC
     	boolean token = false;
+    	
     	while (!token) { 
     		System.out.println("Please choose which conference you want to look at.");
         	System.out.println("1. Western Conference");
@@ -75,6 +79,8 @@ public class Scraper {
         	String input;
         	boolean numCheck = false;
         	int actualNum = -1;
+        	
+        	// Sanitizing our input to make sure its an integer only. 
         	while (!numCheck) {
         		Scanner userInput = new Scanner(System.in);
             	input = userInput.next();
@@ -85,6 +91,8 @@ public class Scraper {
             		System.out.println("You did not enter a number.");
             	}
         	}
+        	
+        	// Switch statement to handle the input.
         	switch(actualNum) {
 	    		case 1: 
 	    			for (Team team : westernTeamList) {
@@ -106,7 +114,23 @@ public class Scraper {
     	}
     }
     
-    public static void initializeTeam(String team, String link, List<Team> westList, List<Team> eastList) {
+    
+    
+    
+    
+    // **************************************************
+    // Private methods
+    // **************************************************
+    
+    /**
+     * Initializes Teams and each web page. Sorts them into the right conference.  
+     * Information is extracted from another function.
+     * @param team: The Team that is being initiated
+     * @param link: The link for each team used
+     * @param westList: a list to contain the western team
+     * @param eastList: a list to contain the eastern team
+     */
+    private static void initializeTeam(String team, String link, List<Team> westList, List<Team> eastList) {
     	HtmlPage page = null;
     	Team teamObj = new Team(team, "", "", "", 0);
     	WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -115,6 +139,7 @@ public class Scraper {
     	webClient.getOptions().setCssEnabled(false);
     	webClient.getOptions().setJavaScriptEnabled(false);
     	
+    	// Gets the current page with link.
     	try {
     		page = webClient.getPage(link);
     		webClient.getCurrentWindow().getJobManager().removeAllJobs();
@@ -122,16 +147,27 @@ public class Scraper {
     	} catch (IOException e) {
     		System.out.println("An error has occured: " + e);
     	}
+    	
+    	// Information extracted.
     	extractInformation(teamObj, page);
+    	
+    	// Sorts into the right list for sorting later.
     	if (teamObj.getConference().equals("Western Conference")) {
     		westList.add(teamObj);
     	} else {
     		eastList.add(teamObj);
     	}
-    	//printInfo(teamObj);
     }
     
-    public static void extractInformation(Team team, HtmlPage page) {
+    
+    /**
+     * Extracts information for the Websites listed. 
+     * All extracted Websites are in the same format. 
+     * numRank seems repetitive but allows for easier sorting.
+     * @param team: The team the information is extracted into
+     * @param page: The page we are extracting information from
+     */
+    private static void extractInformation(Team team, HtmlPage page) {
     	List<DomText> items = page.getByXPath("//p//text()");
     	
     	//Testing Statements for now
@@ -147,21 +183,31 @@ public class Scraper {
     	// Extract the first line for Record and Rank
     	String initialString = items.get(4).toString();
     	String[] sArray = initialString.split(" ");
-    	int numRank = Integer.parseInt(sArray[1].replaceAll("[^0-9]", ""));
     	
+    	// Grabbing the rank
+    	String rank = sArray[1];
+    	// numRank is a parsed integer to be used for easier sorting.
+    	int numRank = Integer.parseInt(sArray[1].replaceAll("[^0-9]", "")); 
+    	
+    	// Grabbing records, conferences, and the wins.
     	String record = sArray[0].replaceAll(",", "");
     	String conf = items.get(6).toString();
     	String winningLine = items.get(10).toString();
     	
     	// Setting the Team fields
-    	team.setRank(sArray[1]);
+    	team.setRank(rank);
     	team.setRecord(record);
     	team.setConference(conf);
     	team.sethiddenNumRank(numRank);
     	team.setLastGame(winningLine);
     }
     
-    public static void printInfo(Team team) {
+    
+    /**
+     * Basic function used to print out the information from each team.
+     * @param team: The team we are printing out.
+     */
+    private static void printInfo(Team team) {
     	System.out.println(team.getName());
     	System.out.println("Rank: " + team.getRank());
     	System.out.println("Record: " + team.getRecord());
