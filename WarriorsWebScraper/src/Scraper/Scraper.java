@@ -172,12 +172,13 @@ public class Scraper {
 
 		//Testing Statements for now
 		/*
-    	int i = 0;
-    	for (DomText domText: items) {
-    		System.out.println(i + ": " + domText.toString());
-    		i++;
-    	}
-		 */
+		int i = 0;
+		for (DomText domText: items) {
+			System.out.println(i + ": " + domText.toString());
+			i++;
+		}
+		*/
+		 
 
 
 		// Extract the first line for Record and Rank
