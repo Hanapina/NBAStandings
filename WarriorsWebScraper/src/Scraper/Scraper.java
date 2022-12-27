@@ -11,17 +11,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
 public class Scraper {
 	/**
 	 * Current main function. May be separated out later for easier reading.
 	 * @param args
+	 * @throws InterruptedException 
 	 */
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws InterruptedException {
 		List<Team> westernTeamList = new LinkedList<>();
 		List<Team> easternTeamList = new LinkedList<>();
-
+		
 		// Western Conference Initialized
 		System.out.println("Initializing Western Conference.\n");
 		initializeTeam("Golden State Warriors", "https://www.basketball-reference.com/teams/GSW/2023.html", westernTeamList, easternTeamList);
@@ -39,6 +41,12 @@ public class Scraper {
 		initializeTeam("Dallas Mavericks", "https://www.basketball-reference.com/teams/DAL/2023.html", westernTeamList, easternTeamList);
 		initializeTeam("Houston Rockets", "https://www.basketball-reference.com/teams/HOU/2023.html", westernTeamList, easternTeamList);
 		initializeTeam("San Antonio Spurs", "https://www.basketball-reference.com/teams/SAS/2023.html", westernTeamList, easternTeamList);	
+		System.out.println("Done.");
+		System.out.println();
+		
+		// Added a sleep to avoid rate limiting
+		System.out.println("Sleeping 1 minute to avoid rate limits.");
+		TimeUnit.MINUTES.sleep(1);
 		System.out.println("Done.");
 		System.out.println();
 
