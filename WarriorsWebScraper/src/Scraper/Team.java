@@ -1,6 +1,9 @@
 package Scraper;
 
-public class Team {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Team implements Serializable{
 
 	// **************************************************
 	// Fields

@@ -3,7 +3,13 @@ package Scraper;
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,12 +25,131 @@ public class Scraper {
 	 * Current main function. May be separated out later for easier reading.
 	 * @param args
 	 * @throws InterruptedException 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void main(final String[] args) throws InterruptedException {
+	@SuppressWarnings("unchecked")
+	public static void main(final String[] args) throws InterruptedException, IOException, ClassNotFoundException {
 		List<Team> westernTeamList = new LinkedList<>();
 		List<Team> easternTeamList = new LinkedList<>();
 
-		// Western Conference Initialized
+		File checkFile = new File("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt");
+		File checkFileTwo = new File("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt");
+		if (!(checkFile.exists() && checkFileTwo.exists())) {
+			createStats(westernTeamList, easternTeamList);
+			try {
+				FileOutputStream fos = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt", false);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(westernTeamList);
+				oos.close();
+				fos.close();
+				FileOutputStream fos2 = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt", false);
+				ObjectOutputStream oos2 = new ObjectOutputStream(fos2);
+				oos2.writeObject(easternTeamList);
+				oos2.close();
+				fos2.close();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} 
+		} 
+		
+		// MENU LOGIC
+		boolean token = false;
+		while (!token) { 
+			System.out.println("Please choose which conference you want to look at.");
+			System.out.println("1. Western Conference");
+			System.out.println("2. Eastern Conference");
+			System.out.println("3. Update your files");
+			System.out.println("4. Exit");
+			System.out.println();
+			String input;
+			boolean numCheck = false;
+			int actualNum = -1;
+
+			// Sanitizing our input to make sure its an integer only. 
+			while (!numCheck) {
+				Scanner userInput = new Scanner(System.in);
+				input = userInput.next();
+				try {
+					actualNum = Integer.parseInt(input);
+					numCheck = true;
+				} catch (NumberFormatException e) {
+					System.out.println("You did not enter a number.");
+				}
+			}
+
+			// Switch statement to handle the input.
+			switch(actualNum) {
+			case 1: 
+				List<Team> westList = new LinkedList<Team>();
+				FileInputStream westFis = new FileInputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt");
+				ObjectInputStream westOis = new ObjectInputStream(westFis);
+				westList = (List<Team>) westOis.readObject();
+				for (Team team : westList) {
+					printInfo(team);
+				}
+				westFis.close();
+				westOis.close();
+				break;
+			case 2:
+				List<Team> eastList = new LinkedList<Team>();
+				FileInputStream eastFis = new FileInputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt");
+				ObjectInputStream eastOis = new ObjectInputStream(eastFis);
+				eastList = (List<Team>) eastOis.readObject();
+				for (Team team: eastList) {
+					printInfo(team);
+				}
+				eastFis.close();
+				eastOis.close();
+				break;
+			case 3:
+				// Clearing list for reinitialization of files.
+				westernTeamList.clear();
+				easternTeamList.clear();
+				createStats(westernTeamList, easternTeamList);
+				try {
+					FileOutputStream fos = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt", false);
+					ObjectOutputStream oos = new ObjectOutputStream(fos);
+					oos.writeObject(westernTeamList);
+					oos.close();
+					fos.close();
+					FileOutputStream fos2 = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt", false);
+					ObjectOutputStream oos2 = new ObjectOutputStream(fos2);
+					oos2.writeObject(easternTeamList);
+					oos2.close();
+					fos2.close();
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
+				System.out.println("Files Updated.\n");
+				break;
+			case 4:
+				token = true;
+				System.out.println("Exiting.");
+				break;
+			default: 
+				System.out.println("You did not pick a choice number.");
+			}
+		}
+	}
+
+
+
+
+
+	// **************************************************
+	// Private methods
+	// **************************************************
+
+	/**
+	 * Function that makes goes through the site, puts said information into two lists, and sorts the two lists after by rank
+	 * The two String arrays are paired teams and sites so make sure they are in the right order if adding in more teams/sites
+	 * @calls initializeTeam
+	 * @param westernTeamList
+	 * @param easternTeamList
+	 * @throws InterruptedException
+	 */
+	private static void createStats(List<Team> westernTeamList, List<Team> easternTeamList) throws InterruptedException {
 		System.out.println("Initializing Western Conference.");
 		String[] westernTeamArray = {"Golden State Warriors", "Denver Nuggets", "Utah Jazz", "Portland Trail Blazers", "Minnesota Timberwolves",
 				"Oklahoma City Thunder", "Phoenix Suns", "Sacramento Kings", "Los Angeles Clippers", "Los Angeles Lakers", "New Orleans Pelicans",
@@ -65,70 +190,17 @@ public class Scraper {
 		}
 		System.out.println("Done.");
 		System.out.println();
-
 		
 		// Sorting each conference array by rank. 
 		Collections.sort(westernTeamList, Comparator.comparing(Team::getHiddenNumRank));
 		Collections.sort(easternTeamList, Comparator.comparing(Team::getHiddenNumRank));
-
-		
-		// MENU LOGIC
-		boolean token = false;
-		while (!token) { 
-			System.out.println("Please choose which conference you want to look at.");
-			System.out.println("1. Western Conference");
-			System.out.println("2. Eastern Conference");
-			System.out.println("3. Exit");
-			System.out.println();
-			String input;
-			boolean numCheck = false;
-			int actualNum = -1;
-
-			// Sanitizing our input to make sure its an integer only. 
-			while (!numCheck) {
-				Scanner userInput = new Scanner(System.in);
-				input = userInput.next();
-				try {
-					actualNum = Integer.parseInt(input);
-					numCheck = true;
-				} catch (NumberFormatException e) {
-					System.out.println("You did not enter a number.");
-				}
-			}
-
-			// Switch statement to handle the input.
-			switch(actualNum) {
-			case 1: 
-				for (Team team : westernTeamList) {
-					printInfo(team);
-				}
-				break;
-			case 2:
-				for (Team team: easternTeamList) {
-					printInfo(team);
-				}
-				break;
-			case 3:
-				token = true;
-				System.out.println("Exiting.");
-				break;
-			default: 
-				System.out.println("You did not pick 1 or 2.");
-			}
-		}
 	}
-
-
-
-
-
-	// **************************************************
-	// Private methods
-	// **************************************************
-
+	
+	
 	/**
 	 * Initializes Teams and each web page. Sorts them into the right conference.  
 	 * Information is extracted from another function.
+	 * @calls extractInformation
 	 * @param team: The Team that is being initiated
 	 * @param link: The link for each team used
 	 * @param westList: a list to contain the western team
@@ -220,4 +292,5 @@ public class Scraper {
 		System.out.println("Last game: " + team.getLastGame());	
 		System.out.println();
 	}
+
 }
