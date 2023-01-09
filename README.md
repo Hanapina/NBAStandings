@@ -6,6 +6,8 @@ Do not constantly spam open the executable when it first runs or you can rate li
 
 The program creates 2 files to be read: **easternConf.txt** and **westerConf.txt** so make sure those are not deleted. 
 
+**MAKE SURE TO KEEP THE EXECUTABLE AND THE TWO ABOVE FILES IN THE SAME DIRECTORY** 
+
 Manually update stats if you need to (also do not spam this). 
 
 Any potential spamming can lead to you getting rate-limited and thus being unable to pull from the basketball reference site. 
