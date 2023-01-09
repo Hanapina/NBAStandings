@@ -12,7 +12,9 @@ Any potential spamming can lead to you getting rate-limited and thus being unabl
 
 ## Supports ##
 
-Currently only a windows executable is created. You may choose to import this project to anything else and build from there as long as I am creditted! 
+Currently only a windows executable is created. 
+
+You may choose to import this project to anything else and build from there as long as I am creditted! 
 
 ## REFERENCES && CREDITS ## 
 Credits to the following for all their stats and numbers: 
