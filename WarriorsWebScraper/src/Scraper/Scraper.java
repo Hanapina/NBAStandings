@@ -10,6 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,29 +37,20 @@ public class Scraper {
 		List<Team> westernTeamList = new LinkedList<>();
 		List<Team> easternTeamList = new LinkedList<>();
 
-		File checkFile = new File("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt");
-		File checkFileTwo = new File("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt");
+		// Initial Startup check for files. No files: Generate Stats + Files, Otherwise: continue on.
+		File checkFile = new File("westernConf.txt");
+		File checkFileTwo = new File("easternConf.txt");
 		if (!(checkFile.exists() && checkFileTwo.exists())) {
 			createStats(westernTeamList, easternTeamList);
-			try {
-				FileOutputStream fos = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt", false);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(westernTeamList);
-				oos.close();
-				fos.close();
-				FileOutputStream fos2 = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt", false);
-				ObjectOutputStream oos2 = new ObjectOutputStream(fos2);
-				oos2.writeObject(easternTeamList);
-				oos2.close();
-				fos2.close();
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} 
+			createOFiles(westernTeamList, easternTeamList);
 		} 
 		
+		SimpleDateFormat timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		// MENU LOGIC
 		boolean token = false;
 		while (!token) { 
+			System.out.println("Files last updated:\nWest: " + timeFormat.format(checkFile.lastModified()) + "\nEast: " + timeFormat.format(checkFileTwo.lastModified()));
+			System.out.println();
 			System.out.println("Please choose which conference you want to look at.");
 			System.out.println("1. Western Conference");
 			System.out.println("2. Eastern Conference");
@@ -82,7 +77,7 @@ public class Scraper {
 			switch(actualNum) {
 			case 1: 
 				List<Team> westList = new LinkedList<Team>();
-				FileInputStream westFis = new FileInputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt");
+				FileInputStream westFis = new FileInputStream("westernConf.txt");
 				ObjectInputStream westOis = new ObjectInputStream(westFis);
 				westList = (List<Team>) westOis.readObject();
 				for (Team team : westList) {
@@ -93,7 +88,7 @@ public class Scraper {
 				break;
 			case 2:
 				List<Team> eastList = new LinkedList<Team>();
-				FileInputStream eastFis = new FileInputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt");
+				FileInputStream eastFis = new FileInputStream("easternConf.txt");
 				ObjectInputStream eastOis = new ObjectInputStream(eastFis);
 				eastList = (List<Team>) eastOis.readObject();
 				for (Team team: eastList) {
@@ -107,20 +102,7 @@ public class Scraper {
 				westernTeamList.clear();
 				easternTeamList.clear();
 				createStats(westernTeamList, easternTeamList);
-				try {
-					FileOutputStream fos = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\westernConf.txt", false);
-					ObjectOutputStream oos = new ObjectOutputStream(fos);
-					oos.writeObject(westernTeamList);
-					oos.close();
-					fos.close();
-					FileOutputStream fos2 = new FileOutputStream("C:\\Users\\Jesse\\Documents\\TestStuff\\easternConf.txt", false);
-					ObjectOutputStream oos2 = new ObjectOutputStream(fos2);
-					oos2.writeObject(easternTeamList);
-					oos2.close();
-					fos2.close();
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				}
+				createOFiles(westernTeamList, easternTeamList);
 				System.out.println("Files Updated.\n");
 				break;
 			case 4:
@@ -196,7 +178,7 @@ public class Scraper {
 		Collections.sort(easternTeamList, Comparator.comparing(Team::getHiddenNumRank));
 	}
 	
-	
+
 	/**
 	 * Initializes Teams and each web page. Sorts them into the right conference.  
 	 * Information is extracted from another function.
@@ -246,12 +228,16 @@ public class Scraper {
 	private static void extractInformation(Team team, HtmlPage page) {
 		List<DomText> items = page.getByXPath("//p//text()");
 
-		//Testing Statements for now
 		/*
+		Testing Statements for now
 		int i = 0;
-		for (DomText domText: items) {
-			System.out.println(i + ": " + domText.toString());
-			i++;
+		int j = 0;
+		if (j == 0) {
+			for (DomText domText: items) {
+				System.out.println(i + ": " + domText.toString());
+				i++;
+			}
+			j++;
 		}
 		*/
 		 
@@ -270,6 +256,13 @@ public class Scraper {
 		String record = sArray[0].replaceAll(",", "");
 		String conf = items.get(6).toString();
 		String winningLine = items.get(10).toString();
+		
+		/*
+		Extra Information to be implemented later. 
+		String nextGame = items.get(14).toString();
+		String ptsPerGame = items.get(21).toString();
+		String oppPtsPerGame = items.get(26).toString();
+		*/
 
 		// Setting the Team fields
 		team.setRank(rank);
@@ -293,4 +286,20 @@ public class Scraper {
 		System.out.println();
 	}
 
+	private static void createOFiles(List<Team> westernTeamList, List<Team> easternTeamList) {
+		try {
+			FileOutputStream fos = new FileOutputStream("westernConf.txt", false);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(westernTeamList);
+			oos.close();
+			fos.close();
+			FileOutputStream fos2 = new FileOutputStream("easternConf.txt", false);
+			ObjectOutputStream oos2 = new ObjectOutputStream(fos2);
+			oos2.writeObject(easternTeamList);
+			oos2.close();
+			fos2.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
 }
